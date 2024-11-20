@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="main-video">
+    <div class="video">
+      <video [src]="selectedVideo?.src" controls muted></video>
+    </div>
+  </div>
+  <div class="video-list">
+
+    @for (item of videos; track $index) {
+    <div class="vid" (click)="selectVideo(item, $index)" [class.active]="$index === activeIndex"><video [src]="item.src"
+        muted></video></div>
+
+    }
+  </div>
+</div>
