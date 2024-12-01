@@ -18,6 +18,7 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
+    "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@videogular/ngx-videogular": "^10.0.1",
     "bootstrap": "^5.3.3",
     "font-awesome": "^4.7.0",
