@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary" style="background-color: #6df513 !important;">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <!-- Container wrapper -->
   <div class="container-fluid">
     <!-- Toggle button -->
@@ -15,9 +15,7 @@
       </a>
       <!-- Left links -->
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link" href="./my-videos">Videos</a>
-        </li>
+
         <li class="nav-item">
           <a class="nav-link" href="#">Projects</a>
         </li>
@@ -28,7 +26,80 @@
 
     <!-- Right elements -->
     <div class="d-flex align-items-center">
+      @if (loggedUserData.id == 0) {
+      <button class="btn btn-outline-light" (click)="openRegisterModel()">Register</button>
+      <button class="btn btn-outline-light mx-2" (click)="openLoginModel()">Login</button>
+      }@else {
+      <button class="btn btn-outline-light" [routerLink]="['/my-videos']">{{loggedUserData.name}}</button>
+      <button class="btn btn-dark mx-2" (click)="logOut()">LogOut</button>
+      }
     </div>
   </div>
 </nav>
 <router-outlet />
+<div class="modal" tabindex="-1" #registerModal>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Register</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="closeRegisterModel()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <label>Name</label>
+            <input type="text" [(ngModel)]="registerObj.name" class="form-control">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <label>Email</label>
+            <input type="text" [(ngModel)]="registerObj.email" class="form-control">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <label>Password</label>
+            <input type="text" [(ngModel)]="registerObj.password" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="openLoginModel()">Go to
+          Login</button>
+        <button type="button" class="btn btn-outline-dark" (click)="onRegister()">Register</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" tabindex="-1" #loginModal>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Login</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="closeLoginModel()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <label>Email</label>
+            <input type="text" [(ngModel)]="loginObj.email" class="form-control">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <label>Password</label>
+            <input type="password" [(ngModel)]="loginObj.password" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="openRegisterModel()">Go to
+          Register</button>
+        <button type="button" class="btn btn-outline-dark" (click)="onLogin()">Login</button>
+      </div>
+    </div>
+  </div>
+</div>

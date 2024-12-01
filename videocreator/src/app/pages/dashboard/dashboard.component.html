@@ -1,6 +1,6 @@
-<!-- <div class="container d-flex justify-content-center align-items-center">
+<div class="container d-flex justify-content-center align-items-center">
   <div class="card w-600">
-
+    <video [src]="videoUrl" controls muted></video>
   </div>
   <div class="card m-3 p-4 w-50">
     <div class="row g-3">
@@ -10,30 +10,32 @@
           <textarea class="form-control" [(ngModel)]="videoSettings.text" placeholder="Type promt" cols="2" rows="5"
             style="overflow-y: auto; resize: none;"></textarea>
         </div>
+        <input class="form-control" [(ngModel)]="videoSettings.userId" placeholder="User ID" type="number" />
+        <select [(ngModel)]="videoSettings.language" class="form-select pd-3">
+          <option selected>Choose the language</option>
+          @for (item of (settingsData$ | async)?.language; track $index) {
+          <option [value]="item">
+            {{item}}</option>
+          }
+        </select>
+        <select [(ngModel)]="videoSettings.speaker_wav" class="form-select pd-3" aria-label="Default select example">
+          <option selected>Choose the voice</option>
+          @for (item of (settingsData$ | async)?.speaker_wav; track $index) {
+          <option [value]="item">
+            {{item.split('/').pop()?.split('.')?.slice(-5,-1)}}</option>
+          }
 
+        </select>
+        <button class="btn btn-dark mt-2" (click)='onGenerate()'>Generate</button>
+        <button class="btn btn-outline-dark mt-2 mx-2">Show the
+          video</button>
       </div>
-      <select [(ngModel)]="videoSettings.language" class="form-select pd-3" aria-label="Default select example">
-        <option selected>Choose the language</option>
-        <option value="en">English</option>
-        <option value="ru">Russian</option>
-      </select>
-      <select [(ngModel)]="videoSettings.speaker_wav" class="form-select pd-3" aria-label="Default select example">
-        <option selected>Choose the voice</option>
-        <option value="./voices/xtts/english1.wav">English1</option>
-        <option value="./voices/xtts/english2.wav">English2</option>
-        <option value="./voices/xtts/russian1.wav">Rus1</option>
-      </select>
-      <input type="number" [(ngModel)]="videoSettings.volume" class="form-control">
-      <select class="form-select pd-3" aria-label="Default select example">
+    </div>
+    <!-- <select class="form-select pd-3" aria-label="Default select example">
         <option selected>Choose Shape</option>
         <option value="1">16:9</option>
         <option value="2">16:10</option>
         <option value="3">4:3</option>
-      </select>
-      <button class="btn btn-success mt-2" (click)='onGenerate()'>Generate</button>
-
-      <button (click)="getVideoById('f02c7163')" class="btn btn-success mt-2">Show the
-        video</button>
-    </div>
+      </select> -->
   </div>
-</div> -->
+</div>
