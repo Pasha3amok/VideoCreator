@@ -8,7 +8,12 @@ import {
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { LoginModel, LoginResponse, User } from './model/Interfaces';
+import {
+  LoginModel,
+  LoginResponse,
+  User,
+  VideosModel,
+} from './model/Interfaces';
 
 @Component({
   selector: 'app-root',
@@ -57,11 +62,8 @@ export class AppComponent implements OnInit {
     }
   }
   onRegister() {
-    this.masterService
-      .registerNewUser(this.registerObj)
-      .subscribe((res: User) => {
-        res;
-      });
+    this.masterService.registerNewUser(this.registerObj).subscribe();
+    this.closeRegisterModel();
   }
   onLogin() {
     this.masterService

@@ -41,7 +41,7 @@
         background: #eee;
       }
       &.active{
-        background: #2980b9;
+        background: rgba($color: #333741, $alpha: 1.0);
       }
     }
     &::-webkit-scrollbar{

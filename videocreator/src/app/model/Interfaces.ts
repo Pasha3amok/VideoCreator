@@ -17,7 +17,7 @@ export class User {
     this.name = '';
     this.email = '';
     this.password = '';
-    this.id = undefined;
+    this.id = 0;
   }
 }
 

@@ -16,8 +16,8 @@ import {
   providedIn: 'root',
 })
 export class MasterService {
-  // apiUrl: string = 'http://178.74.202.86:54108/';
-  apiUrl: string = 'http://127.0.0.1:8000/';
+  apiUrl: string = 'http://178.74.202.86:54108/';
+  // apiUrl: string = 'http://127.0.0.1:8000/';
   http = inject(HttpClient);
 
   constructor() {}
@@ -25,7 +25,7 @@ export class MasterService {
   generateVideo(
     paramsOfVideo: GenerateVideoModel
   ): Observable<APIResponseModel> {
-    const url = `${this.apiUrl}test_generate_video/${paramsOfVideo.userId}`;
+    const url = `${this.apiUrl}generate_video/${paramsOfVideo.userId}`;
     return this.http.post<APIResponseModel>(url, paramsOfVideo);
   }
 
@@ -37,9 +37,9 @@ export class MasterService {
     const url = `${this.apiUrl}video_status/${viseoId}`;
     return this.http.get<VideoStatusModel>(url);
   }
-  getAllVideos(): Observable<VideosModel> {
-    const url = `${this.apiUrl}all_videos`;
-    return this.http.get<VideosModel>(url);
+  getAllVideos(): Observable<VideosModel[]> {
+    const url = `${this.apiUrl}all_videos?include_with_error_status=false`;
+    return this.http.get<VideosModel[]>(url);
   }
   registerNewUser(obj: User): Observable<User> {
     const url = `${this.apiUrl}register_user?name=${obj.name}&email=${obj.email}&password=${obj.password}`;
