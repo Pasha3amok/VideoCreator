@@ -69,7 +69,6 @@ export class DashboardComponent implements OnInit {
       .subscribe((res: APIResponseModel) => {
         if (res.status === 'completed') {
           this.videoUrl = `${this.masterService.apiUrl}video_file/${this.videoId}`;
-          console.log('Cюдаааа:' + this.videoUrl);
         }
       });
   }

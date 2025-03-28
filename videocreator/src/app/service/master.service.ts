@@ -16,8 +16,8 @@ import {
   providedIn: 'root',
 })
 export class MasterService {
-  apiUrl: string = 'http://178.74.202.86:54108/';
-  // apiUrl: string = 'http://127.0.0.1:8000/';
+  // apiUrl: string = 'http://178.74.202.86:54108/';
+  apiUrl: string = 'http://127.0.0.1:8000/';
   http = inject(HttpClient);
 
   constructor() {}
