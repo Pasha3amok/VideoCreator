@@ -44,21 +44,21 @@ export class GenerateVideoModel {
   userId: number;
   text?: string;
   language: string;
-  speaker_wav: string;
+  speaker: string;
   volume: number;
 
   constructor() {
-    this.userId = 0;
+    this.userId = 3;
     this.text = '';
     this.language = '';
-    this.speaker_wav = '';
+    this.speaker = '';
     this.volume = 0.1;
   }
 }
 
 export interface Settings {
   language: string[];
-  speaker_wav: string[];
+  speaker: string[];
   volume: number[];
 }
 

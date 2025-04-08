@@ -17,9 +17,9 @@
             {{item}}</option>
           }
         </select>
-        <select [(ngModel)]="videoSettings.speaker_wav" class="form-select m-2" aria-label="Choose the voice">
+        <select [(ngModel)]="videoSettings.speaker" class="form-select m-2" aria-label="Choose the voice">
           <option disabled>Choose the voice</option>
-          @for (item of (settingsData$ | async)?.speaker_wav; track $index) {
+          @for (item of (settingsData$ | async)?.speaker; track $index) {
           <option [value]="item">
             {{item.split('/').pop()?.split('.')?.slice(-5,-1)}}</option>
           }

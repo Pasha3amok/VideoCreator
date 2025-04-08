@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { MasterService } from '../../service/master.service';
-import { VideosModel } from '../../model/Interfaces';
-import { map } from 'rxjs';
+import { VideosModel, VideoStatusModel } from '../../model/Interfaces';
+import { forkJoin, interval, map, Subscription, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-my-videos',
@@ -10,9 +10,10 @@ import { map } from 'rxjs';
   templateUrl: './my-videos.component.html',
   styleUrl: './my-videos.component.scss',
 })
-export class MyVideosComponent implements OnInit {
+export class MyVideosComponent implements OnInit, OnDestroy {
   masterService = inject(MasterService);
   videoObj: VideosModel[] = [];
+  incompleteVideos: VideosModel[] = [];
   videos = [{ src: '' }];
 
   // Поточне вибране відео
@@ -21,8 +22,14 @@ export class MyVideosComponent implements OnInit {
   // Індекс активного відео
   activeIndex: number | null = null;
 
+  private incompleteVideosIntervalSubscription: Subscription =
+    new Subscription();
+
   ngOnInit(): void {
     this.loadVideosByAuthorId(0);
+  }
+  ngOnDestroy(): void {
+    this.incompleteVideosIntervalSubscription?.unsubscribe();
   }
 
   loadVideosByAuthorId(authorId: number): void {
@@ -46,5 +53,45 @@ export class MyVideosComponent implements OnInit {
   selectVideo(video: { src: string }, index: number): void {
     this.selectedVideo = video;
     this.activeIndex = index;
+  }
+  private checkIncompleteVideos(): void {
+    this.incompleteVideos = this.videoObj.filter(
+      (video) => video.status !== 'completed'
+    );
+
+    if (!this.incompleteVideos.length) {
+      this.incompleteVideosIntervalSubscription?.unsubscribe();
+      return;
+    }
+
+    const incompleteVideosObservables = this.incompleteVideos.map((video) =>
+      this.masterService.getVideoStatus(video.id)
+    );
+
+    this.incompleteVideosIntervalSubscription = interval(5000)
+      .pipe(switchMap(() => forkJoin(incompleteVideosObservables)))
+      .subscribe((videosStatuses: VideoStatusModel[]) => {
+        this.incompleteVideos = this.incompleteVideos.filter((video, index) => {
+          if (videosStatuses[index].status === 'completed') {
+            const videoObjIndex = this.videoObj.findIndex(
+              (v) => v.id === video.id
+            );
+
+            if (videoObjIndex !== -1) {
+              this.videoObj[videoObjIndex] = { ...video, status: 'completed' };
+              this.videos[videoObjIndex] = {
+                src: `${this.masterService.apiUrl}video_file/${video.id}`,
+              };
+            }
+
+            return false;
+          }
+          return true;
+        });
+
+        if (!this.incompleteVideos.length) {
+          this.incompleteVideosIntervalSubscription?.unsubscribe();
+        }
+      });
   }
 }

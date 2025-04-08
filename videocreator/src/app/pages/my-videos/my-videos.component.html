@@ -7,9 +7,13 @@
   <div class="video-list">
 
     @for (item of videos; track $index) {
+    @if (item.src) {
     <div class="vid" (click)="selectVideo(item, $index)" [class.active]="$index === activeIndex"><video [src]="item.src"
-        muted></video></div>
-
+        muted></video>
+    </div>
+    } @else {
+    <div>Video is in process...</div>
+    }
     }
   </div>
 </div>
