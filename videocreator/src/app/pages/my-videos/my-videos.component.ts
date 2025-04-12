@@ -1,3 +1,4 @@
+import { User } from './../../model/Interfaces';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { MasterService } from '../../service/master.service';
 import {
@@ -6,6 +7,7 @@ import {
   VideoStatusModel,
 } from '../../model/Interfaces';
 import { forkJoin, interval, map, Subscription, switchMap } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-my-videos',
@@ -16,10 +18,12 @@ import { forkJoin, interval, map, Subscription, switchMap } from 'rxjs';
 })
 export class MyVideosComponent implements OnInit, OnDestroy {
   masterService = inject(MasterService);
+  router = inject(Router);
   videoObj: VideosModel[] = [];
   incompleteVideos: VideosModel[] = [];
-  generateVideoObj: GenerateVideoModel = new GenerateVideoModel();
+  user: User = new User();
   videos = [{ src: '' }];
+  loggedUserData: User = new User();
 
   selectedVideo: { src: string } | null = null;
   activeIndex: number | null = null;
@@ -28,7 +32,12 @@ export class MyVideosComponent implements OnInit, OnDestroy {
     new Subscription();
 
   ngOnInit(): void {
-    this.loadVideosByAuthorId(this.generateVideoObj.userId);
+    const isUser = localStorage.getItem('User');
+    if (isUser != null) {
+      const parseObj = JSON.parse(isUser);
+      this.loggedUserData = parseObj;
+    }
+    this.loadVideosByAuthorId(this.getUserId());
   }
   ngOnDestroy(): void {
     this.incompleteVideosIntervalSubscription?.unsubscribe();
@@ -36,19 +45,23 @@ export class MyVideosComponent implements OnInit, OnDestroy {
 
   loadVideosByAuthorId(authorId: number): void {
     this.masterService
-      .getAllVideos()
-      .pipe(
-        map((res: VideosModel[]) => {
-          this.videoObj = res.filter(
-            (item) => item.author_id === authorId && item.status === 'completed'
-          );
-        })
-      )
-      .subscribe((res) => {
+      .getVideosByAuthor(authorId)
+      .subscribe((res: VideosModel[]) => {
+        this.videoObj = res;
         this.videos = this.videoObj.map((item) => ({
           src: `${this.masterService.apiUrl}video_file/${item.id}`,
         }));
       });
+  }
+  getUserId(): number {
+    const userId = this.loggedUserData.id;
+    if (userId) {
+      return userId;
+    } else {
+      alert('Ви не зареєстровані!');
+      this.router.navigate(['/home']);
+      return 0;
+    }
   }
 
   selectVideo(video: { src: string }, index: number): void {

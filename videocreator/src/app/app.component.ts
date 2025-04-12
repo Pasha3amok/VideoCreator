@@ -7,8 +7,9 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import {
+  GenerateVideoModel,
   LoginModel,
   LoginResponse,
   User,
@@ -25,6 +26,7 @@ import {
 export class AppComponent implements OnInit {
   title = 'videocreator';
   masterService = inject(MasterService);
+  router = inject(Router);
   registerObj: User = new User();
   loginObj: LoginModel = new LoginModel();
   loggedUserData: User = new User();
@@ -62,7 +64,12 @@ export class AppComponent implements OnInit {
     }
   }
   onRegister() {
-    this.masterService.registerNewUser(this.registerObj).subscribe();
+    this.masterService
+      .registerNewUser(this.registerObj)
+      .subscribe((res: User) => {
+        localStorage.setItem('User', JSON.stringify(res));
+      });
+    this.router.navigate(['/home']);
     this.closeRegisterModel();
   }
   onLogin() {
@@ -72,6 +79,7 @@ export class AppComponent implements OnInit {
         localStorage.setItem('User', JSON.stringify(res));
         this.closeLoginModel();
       });
+    this.router.navigate(['/home']);
   }
   logOut() {
     localStorage.removeItem('User');

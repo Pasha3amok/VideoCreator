@@ -3,6 +3,7 @@ import {
   APIResponseModel,
   GenerateVideoModel,
   Settings,
+  User,
   VideoInfoModel,
   VideosModel,
 } from '../../model/Interfaces';
@@ -23,6 +24,7 @@ import {
   takeWhile,
 } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,27 +35,38 @@ import { FormsModule } from '@angular/forms';
 })
 export class DashboardComponent implements OnInit {
   masterService = inject(MasterService);
+  router = inject(Router);
   videoSettings: GenerateVideoModel = new GenerateVideoModel();
   settingsData$: Observable<Settings> = new Observable<Settings>();
   subscriptionList: Subscription[] = [];
+  loggedUserData: User | null = null;
   videoId: string = '';
   videoUrl: string = '';
-  authorId = 0;
 
   ngOnInit(): void {
-    console.log(this.videoUrl);
+    const isUser = localStorage.getItem('User');
+    if (isUser != null) {
+      this.loggedUserData = JSON.parse(isUser);
+    } else {
+      alert('Будь ласка, увійдіть для генерації відео.');
+    }
     this.settingsData$ = this.masterService.getSettings();
   }
 
   onGenerate() {
+    if (!this.loggedUserData || !this.loggedUserData.id) {
+      alert('Помилка: не вдалося визначити ID користувача.');
+      return;
+    }
+    const currentUserId = this.loggedUserData.id;
+
     this.subscriptionList.push(
       this.masterService
-        .generateVideo(this.videoSettings)
+        .generateVideo(this.videoSettings, currentUserId)
         .subscribe((res: APIResponseModel) => {
           if (res.status === 'accepted') {
             this.videoId = res.name;
             this.pollStatus();
-            this.videoSettings.userId = this.authorId;
             alert(res.message);
           } else {
             alert(res.status);
@@ -61,6 +74,8 @@ export class DashboardComponent implements OnInit {
         })
     );
   }
+
+  onTextGenerate() {}
 
   pollStatus(): void {
     interval(2000)

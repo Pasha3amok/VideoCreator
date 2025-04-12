@@ -24,12 +24,16 @@ export class MasterService {
   constructor() {}
 
   generateVideo(
-    paramsOfVideo: GenerateVideoModel
+    paramsOfVideo: GenerateVideoModel,
+    authorId: number
   ): Observable<APIResponseModel> {
-    const url = `${this.apiUrl}generate_video/${paramsOfVideo.userId}`;
+    const url = `${this.apiUrl}generate_video/${authorId}`;
     return this.http.post<APIResponseModel>(url, paramsOfVideo);
   }
-
+  // getText(): Observable<VideoStatusModel> {
+  //   const url = `${this.apiUrl}video_status/${viseoId}`;
+  //   return this.http.get<VideoStatusModel>(url);
+  // }
   getSettings(): Observable<Settings> {
     const url = `${this.apiUrl}settings`;
     return this.http.get<Settings>(url);
@@ -44,6 +48,10 @@ export class MasterService {
   }
   getAllVideos(): Observable<VideosModel[]> {
     const url = `${this.apiUrl}all_videos?include_with_error_status=false`;
+    return this.http.get<VideosModel[]>(url);
+  }
+  getVideosByAuthor(authorId: number): Observable<VideosModel[]> {
+    const url = `${this.apiUrl}get_videos_by_author/${authorId}?include_with_error_status=false`;
     return this.http.get<VideosModel[]>(url);
   }
   registerNewUser(obj: User): Observable<User> {

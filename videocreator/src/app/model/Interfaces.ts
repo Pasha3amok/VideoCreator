@@ -10,14 +10,11 @@ export class User {
   password: string;
   id?: number;
 
-  /**
-   *
-   */
   constructor() {
     this.name = '';
     this.email = '';
     this.password = '';
-    this.id = 0;
+    this.id = undefined;
   }
 }
 
@@ -25,9 +22,6 @@ export class LoginModel {
   email: string;
   password: string;
 
-  /**
-   *
-   */
   constructor() {
     this.email = '';
     this.password = '';
@@ -47,7 +41,6 @@ export interface VideoInfoModel {
 }
 
 export class GenerateVideoModel {
-  userId: number;
   text?: string;
   language: string;
   speaker: string;
@@ -56,7 +49,6 @@ export class GenerateVideoModel {
   volume: number;
 
   constructor() {
-    this.userId = 0;
     this.text = '';
     this.language = '';
     this.speaker = '';

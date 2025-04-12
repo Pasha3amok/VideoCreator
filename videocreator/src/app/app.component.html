@@ -45,7 +45,7 @@
 
       <!-- Right elements -->
       <div class="d-flex align-items-center">
-        @if (loggedUserData.id == 0) {
+        @if (loggedUserData.id == undefined) {
         <button class="btn btn-outline-light" (click)="openRegisterModel()">Register</button>
         <button class="btn btn-outline-light mx-2" (click)="openLoginModel()">Login</button>
         }@else {
