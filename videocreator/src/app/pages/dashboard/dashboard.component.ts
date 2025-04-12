@@ -3,6 +3,7 @@ import {
   APIResponseModel,
   GenerateVideoModel,
   Settings,
+  VideoInfoModel,
   VideosModel,
 } from '../../model/Interfaces';
 import { MasterService } from './../../service/master.service';
@@ -37,6 +38,7 @@ export class DashboardComponent implements OnInit {
   subscriptionList: Subscription[] = [];
   videoId: string = '';
   videoUrl: string = '';
+  authorId = 0;
 
   ngOnInit(): void {
     console.log(this.videoUrl);
@@ -44,7 +46,6 @@ export class DashboardComponent implements OnInit {
   }
 
   onGenerate() {
-    debugger;
     this.subscriptionList.push(
       this.masterService
         .generateVideo(this.videoSettings)
@@ -52,6 +53,7 @@ export class DashboardComponent implements OnInit {
           if (res.status === 'accepted') {
             this.videoId = res.name;
             this.pollStatus();
+            this.videoSettings.userId = this.authorId;
             alert(res.message);
           } else {
             alert(res.status);

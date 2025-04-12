@@ -1,6 +1,10 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { MasterService } from '../../service/master.service';
-import { VideosModel, VideoStatusModel } from '../../model/Interfaces';
+import {
+  GenerateVideoModel,
+  VideosModel,
+  VideoStatusModel,
+} from '../../model/Interfaces';
 import { forkJoin, interval, map, Subscription, switchMap } from 'rxjs';
 
 @Component({
@@ -14,26 +18,23 @@ export class MyVideosComponent implements OnInit, OnDestroy {
   masterService = inject(MasterService);
   videoObj: VideosModel[] = [];
   incompleteVideos: VideosModel[] = [];
+  generateVideoObj: GenerateVideoModel = new GenerateVideoModel();
   videos = [{ src: '' }];
 
-  // Поточне вибране відео
   selectedVideo: { src: string } | null = null;
-
-  // Індекс активного відео
   activeIndex: number | null = null;
 
   private incompleteVideosIntervalSubscription: Subscription =
     new Subscription();
 
   ngOnInit(): void {
-    this.loadVideosByAuthorId(0);
+    this.loadVideosByAuthorId(this.generateVideoObj.userId);
   }
   ngOnDestroy(): void {
     this.incompleteVideosIntervalSubscription?.unsubscribe();
   }
 
   loadVideosByAuthorId(authorId: number): void {
-    // Фільтруємо API за автором
     this.masterService
       .getAllVideos()
       .pipe(
@@ -49,7 +50,7 @@ export class MyVideosComponent implements OnInit, OnDestroy {
         }));
       });
   }
-  // Метод вибору відео
+
   selectVideo(video: { src: string }, index: number): void {
     this.selectedVideo = video;
     this.activeIndex = index;

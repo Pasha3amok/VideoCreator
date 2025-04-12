@@ -8,6 +8,7 @@ import {
   LoginResponse,
   Settings,
   User,
+  VideoInfoModel,
   VideosModel,
   VideoStatusModel,
 } from '../model/Interfaces';
@@ -36,6 +37,10 @@ export class MasterService {
   getVideoStatus(viseoId: string): Observable<VideoStatusModel> {
     const url = `${this.apiUrl}video_status/${viseoId}`;
     return this.http.get<VideoStatusModel>(url);
+  }
+  getVideoInfo(viseoId: string): Observable<VideoInfoModel> {
+    const url = `${this.apiUrl}video_info/${viseoId}`;
+    return this.http.get<VideoInfoModel>(url);
   }
   getAllVideos(): Observable<VideosModel[]> {
     const url = `${this.apiUrl}all_videos?include_with_error_status=false`;

@@ -39,19 +39,29 @@ export interface VideoStatusModel {
   name: string;
   message?: string;
 }
+export interface VideoInfoModel {
+  status: string;
+  id: string;
+  author_id: number;
+  details: {};
+}
 
 export class GenerateVideoModel {
   userId: number;
   text?: string;
   language: string;
   speaker: string;
+  quality: string;
+  orientation: string;
   volume: number;
 
   constructor() {
-    this.userId = 3;
+    this.userId = 0;
     this.text = '';
     this.language = '';
     this.speaker = '';
+    this.quality = '';
+    this.orientation = '';
     this.volume = 0.1;
   }
 }
