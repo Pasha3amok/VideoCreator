@@ -1,5 +1,11 @@
 import { User } from './../../model/Interfaces';
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MasterService } from '../../service/master.service';
 import {
   GenerateVideoModel,
@@ -7,7 +13,7 @@ import {
   VideoStatusModel,
 } from '../../model/Interfaces';
 import { forkJoin, interval, map, Subscription, switchMap } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-my-videos',
@@ -15,14 +21,16 @@ import { Router } from '@angular/router';
   imports: [],
   templateUrl: './my-videos.component.html',
   styleUrl: './my-videos.component.scss',
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class MyVideosComponent implements OnInit, OnDestroy {
   masterService = inject(MasterService);
-  router = inject(Router);
+  router = inject(ActivatedRoute);
   videoObj: VideosModel[] = [];
   incompleteVideos: VideosModel[] = [];
   user: User = new User();
   videos = [{ src: '' }];
+  videoId!: String;
   loggedUserData: User = new User();
 
   selectedVideo: { src: string } | null = null;
@@ -38,6 +46,7 @@ export class MyVideosComponent implements OnInit, OnDestroy {
       this.loggedUserData = parseObj;
     }
     this.loadVideosByAuthorId(this.getUserId());
+    this.videoId = this.router.snapshot.paramMap.get('videoId') || '';
   }
   ngOnDestroy(): void {
     this.incompleteVideosIntervalSubscription?.unsubscribe();
@@ -59,7 +68,6 @@ export class MyVideosComponent implements OnInit, OnDestroy {
       return userId;
     } else {
       alert('Ви не зареєстровані!');
-      this.router.navigate(['/home']);
       return 0;
     }
   }
@@ -68,6 +76,13 @@ export class MyVideosComponent implements OnInit, OnDestroy {
     this.selectedVideo = video;
     this.activeIndex = index;
   }
+
+  deleteVideoByAuthor(index: number) {
+    const deletedVideo: VideosModel = this.videoObj[index];
+    this.masterService.deleteVideoByAuthor(deletedVideo).subscribe();
+    this.loadVideosByAuthorId(this.getUserId());
+  }
+
   private checkIncompleteVideos(): void {
     this.incompleteVideos = this.videoObj.filter(
       (video) => video.status !== 'completed'

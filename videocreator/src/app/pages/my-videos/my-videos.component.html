@@ -10,6 +10,8 @@
     @if (item.src) {
     <div class="vid" (click)="selectVideo(item, $index)" [class.active]="$index === activeIndex"><video [src]="item.src"
         muted></video>
+      <button class="btn btn-danger p-2" (click)="deleteVideoByAuthor($index)"><i
+          class="fa-solid fa-trash"></i></button>
     </div>
     } @else {
     <div>Video is in process...</div>

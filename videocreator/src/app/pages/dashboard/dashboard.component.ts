@@ -32,6 +32,7 @@ import { Router } from '@angular/router';
   imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class DashboardComponent implements OnInit {
   masterService = inject(MasterService);
@@ -75,7 +76,23 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  onTextGenerate() {}
+  onGenerateText() {
+    var language = this.videoSettings.text;
+    if (language == 'uk') {
+      language = 'ua';
+    }
+    if (language == '') {
+      alert('Вкажіть мову в налаштуваннях');
+      return;
+    }
+    this.subscriptionList.push(
+      this.masterService
+        .getText(this.videoSettings.text!, this.videoSettings.language)
+        .subscribe((res: string) => {
+          this.videoSettings.text = res;
+        })
+    );
+  }
 
   pollStatus(): void {
     interval(2000)
@@ -86,6 +103,8 @@ export class DashboardComponent implements OnInit {
       .subscribe((res: APIResponseModel) => {
         if (res.status === 'completed') {
           this.videoUrl = `${this.masterService.apiUrl}video_file/${this.videoId}`;
+        } else {
+          return;
         }
       });
   }

@@ -30,10 +30,11 @@ export class MasterService {
     const url = `${this.apiUrl}generate_video/${authorId}`;
     return this.http.post<APIResponseModel>(url, paramsOfVideo);
   }
-  // getText(): Observable<VideoStatusModel> {
-  //   const url = `${this.apiUrl}video_status/${viseoId}`;
-  //   return this.http.get<VideoStatusModel>(url);
-  // }
+  getText(prompt: string, language: string): Observable<string> {
+    const encodedPrompt = encodeURIComponent(prompt);
+    const url = `${this.apiUrl}generate_text/${encodedPrompt}/${language}`;
+    return this.http.get<string>(url);
+  }
   getSettings(): Observable<Settings> {
     const url = `${this.apiUrl}settings`;
     return this.http.get<Settings>(url);
@@ -53,6 +54,10 @@ export class MasterService {
   getVideosByAuthor(authorId: number): Observable<VideosModel[]> {
     const url = `${this.apiUrl}get_videos_by_author/${authorId}?include_with_error_status=false`;
     return this.http.get<VideosModel[]>(url);
+  }
+  deleteVideoByAuthor(obj: VideosModel): Observable<VideosModel> {
+    const url = `${this.apiUrl}delete_video_by_author?author_id=${obj.author_id}&video_id=${obj.id}`;
+    return this.http.post<VideosModel>(url, obj);
   }
   registerNewUser(obj: User): Observable<User> {
     const url = `${this.apiUrl}register_user?name=${obj.name}&email=${obj.email}&password=${obj.password}`;

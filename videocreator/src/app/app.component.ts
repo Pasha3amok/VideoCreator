@@ -1,5 +1,6 @@
 import { MasterService } from './service/master.service';
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   inject,
@@ -22,6 +23,7 @@ import {
   imports: [RouterModule, RouterOutlet, ReactiveFormsModule, FormsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
   title = 'videocreator';
@@ -35,6 +37,9 @@ export class AppComponent implements OnInit {
   @ViewChild('loginModal') loginModal: ElementRef | undefined;
 
   ngOnInit(): void {
+    this.checkIsUser();
+  }
+  checkIsUser() {
     const isUser = localStorage.getItem('User');
     if (isUser != null) {
       const parseObj = JSON.parse(isUser);
@@ -68,15 +73,17 @@ export class AppComponent implements OnInit {
       .registerNewUser(this.registerObj)
       .subscribe((res: User) => {
         localStorage.setItem('User', JSON.stringify(res));
+        this.checkIsUser();
+        this.closeRegisterModel();
       });
     this.router.navigate(['/home']);
-    this.closeRegisterModel();
   }
   onLogin() {
     this.masterService
       .loginUser(this.loginObj)
       .subscribe((res: LoginResponse) => {
         localStorage.setItem('User', JSON.stringify(res));
+        this.checkIsUser();
         this.closeLoginModel();
       });
     this.router.navigate(['/home']);

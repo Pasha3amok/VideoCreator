@@ -7,10 +7,10 @@
       <div class="card-body">
         <h5 class="card-title">Write your promt down</h5>
         <div class="input-group p-0">
-          <textarea class="form-control" [(ngModel)]="videoSettings.text" placeholder="Type promt" cols="2" rows="5"
-            style="overflow-y: auto; resize: none;"></textarea>
+          <textarea class="form-control" [(ngModel)]="videoSettings.text" placeholder="Type promt or script" cols="2"
+            rows="5" style="overflow-y: auto; resize: none;"></textarea>
         </div>
-        <button class="btn btn-outline-dark mb-5 w-100" (click)='onTextGenerate()'>generate promt</button>
+        <button class="btn btn-outline-dark mb-5 w-100" (click)='onGenerateText()'>generate promt</button>
         <select [(ngModel)]="videoSettings.language" class="form-select m-2">
           <option disabled>Choose the language</option>
           @for (item of (settingsData$ | async)?.language; track $index) {
