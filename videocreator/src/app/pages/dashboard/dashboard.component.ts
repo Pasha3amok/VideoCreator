@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit {
   subscriptionList: Subscription[] = [];
   loggedUserData: User | null = null;
   videoId: string = '';
-  videoUrl: string = '';
+  videoUrl = signal<string>('');
 
   ngOnInit(): void {
     const isUser = localStorage.getItem('User');
@@ -77,7 +77,7 @@ export class DashboardComponent implements OnInit {
   }
 
   onGenerateText() {
-    var language = this.videoSettings.text;
+    var language = this.videoSettings.text();
     if (language == 'uk') {
       language = 'ua';
     }
@@ -87,9 +87,9 @@ export class DashboardComponent implements OnInit {
     }
     this.subscriptionList.push(
       this.masterService
-        .getText(this.videoSettings.text!, this.videoSettings.language)
+        .getText(this.videoSettings.text()!, this.videoSettings.language)
         .subscribe((res: string) => {
-          this.videoSettings.text = res;
+          this.videoSettings.text.set(res);
         })
     );
   }
@@ -102,7 +102,9 @@ export class DashboardComponent implements OnInit {
       )
       .subscribe((res: APIResponseModel) => {
         if (res.status === 'completed') {
-          this.videoUrl = `${this.masterService.apiUrl}video_file/${this.videoId}`;
+          this.videoUrl.set(
+            `${this.masterService.apiUrl}video_file/${this.videoId}`
+          );
         } else {
           return;
         }

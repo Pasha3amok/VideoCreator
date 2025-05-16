@@ -1,3 +1,5 @@
+import { signal, WritableSignal } from '@angular/core';
+
 export interface APIResponseModel {
   status: string;
   name: string;
@@ -41,7 +43,7 @@ export interface VideoInfoModel {
 }
 
 export class GenerateVideoModel {
-  text?: string;
+  text: WritableSignal<string>;
   language: string;
   speaker: string;
   quality: string;
@@ -49,7 +51,7 @@ export class GenerateVideoModel {
   volume: number;
 
   constructor() {
-    this.text = '';
+    this.text = signal<string>('');
     this.language = '';
     this.speaker = '';
     this.quality = '';
