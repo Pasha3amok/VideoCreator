@@ -1,70 +1,78 @@
-<div class="container d-flex justify-content-center align-items-center">
-  <div class="card w-100 border-0">
-    <video [src]="videoUrl()" controls muted></video>
-  </div>
-  <div class="card m-3 p-4 w-50">
-    <div class="row g-3">
-      <div class="card-body">
-        <h5 class="card-title">Write your promt down</h5>
-        <div class="input-group p-0">
-          <textarea class="form-control" [(ngModel)]="videoSettings.text" placeholder="Type promt or script" cols="2"
-            rows="5" style="overflow-y: auto; resize: none;"></textarea>
-        </div>
-        <button class="btn btn-outline-dark mb-5 w-100" (click)='onGenerateText()'>generate promt</button>
-        <select [(ngModel)]="videoSettings.language" class="form-select m-2">
-          <option disabled>Choose the language</option>
-          @for (item of (settingsData$ | async)?.language; track $index) {
-          <option [value]="item">
-            {{item}}</option>
-          }
-        </select>
-        <select [(ngModel)]="videoSettings.speaker" class="form-select m-2" aria-label="Choose the voice">
-          <option disabled>Choose the voice</option>
-          @for (item of (settingsData$ | async)?.speaker; track $index) {
-          <option [value]="item">
-            {{item.split('/').pop()?.split('.')?.slice(-5,-1)}}</option>
-          }
+<div class="dashboard-container">
 
+  <!-- Основний контент -->
+  <div class="dashboard-content">
+    <!-- Ліва частина: Відео -->
+    <div class="video-preview">
+      <video [src]="videoUrl()" controls muted class="video-element"></video>
+    </div>
+<!-- Права частина: Налаштування -->
+<div class="settings-panel">
+  <div class="settings-header">
+    <h5 class="settings-title">Generate Your Video</h5>
+  </div>
+<!-- Поле для тексту -->
+<div class="settings-group">
+  <textarea class="settings-textarea" [(ngModel)]="videoSettings.text" placeholder="Type prompt or script"></textarea>
+</div>
+
+<!-- Кнопка для генерації тексту -->
+<button class="settings-button" (click)="onGenerateText()">Generate Prompt</button>
+
+<!-- Вибір мови -->
+<div class="settings-group">
+  <label for="languageSelect" class="settings-label">Choose Language</label>
+  <select id="languageSelect" [(ngModel)]="videoSettings.language" class="settings-select">
+    <option disabled selected>Choose the language</option>
+    <option *ngFor="let item of (settingsData$ | async)?.language" [value]="item">{{ item }}</option>
         </select>
-        <label for="form-check m-2">Choose orientation</label>
-        <div class="form-check m-2">
-          <input class="form-check-input" type="radio" name="orientation" id="portrait" value="portrait"
-            [(ngModel)]="videoSettings.orientation" checked>
-          <label class="form-check-label" for="portrait">
-            <i class="fa-solid fa-xl fa-mobile-screen-button"></i>
+      </div>
+
+      <!-- Вибір голосу -->
+      <div class="settings-group">
+        <label for="speakerSelect" class="settings-label">Choose Voice</label>
+        <select id="speakerSelect" [(ngModel)]="videoSettings.speaker" class="settings-select">
+          <option disabled selected>Choose the voice</option>
+          <option *ngFor="let item of (settingsData$ | async)?.speaker" [value]="item">
+            {{ item.split('/').pop()?.split('.')?.slice(-5, -1) }}
+          </option>
+        </select>
+      </div>
+      
+      <!-- Вибір орієнтації -->
+      <div class="settings-group">
+        <label class="settings-label">Choose Orientation</label>
+        <div class="settings-options">
+          <label class="settings-option">
+            <input type="radio" name="orientation" value="portrait" [(ngModel)]="videoSettings.orientation" checked>
+            <i class="fa-solid fa-mobile-screen-button"></i> <!-- Іконка для Portrait -->
+          </label>
+          <label class="settings-option">
+            <input type="radio" name="orientation" value="landscape" [(ngModel)]="videoSettings.orientation">
+            <i class="fa-solid fa-desktop"></i> <!-- Іконка для Landscape -->
           </label>
         </div>
-        <div class="form-check m-2">
-          <input class="form-check-input" type="radio" name="orientation" id="landscape" value="landscape"
-            [(ngModel)]="videoSettings.orientation">
-          <label class="form-check-label" for="landscape">
-            <i class="fa-solid fa-xl fa-desktop"></i>
-          </label>
-        </div>
-        <label for="form-check m-2">Choose quality</label>
-        <div class="form-check m-2">
-          <input class="form-check-input" type="radio" name="quality" id="1080p" value="1080p"
-            [(ngModel)]="videoSettings.quality" checked>
-          <label class="form-check-label" for="1080p">
+      </div>
+<!-- Вибір якості -->
+<div class="settings-group">
+  <label class="settings-label">Choose Quality</label>
+  <div class="settings-options">
+    <label class="settings-option">
+      <input type="radio" name="quality" value="1080p" [(ngModel)]="videoSettings.quality" checked>
             1080p
           </label>
-        </div>
-        <div class="form-check m-2">
-          <input class="form-check-input" type="radio" name="quality" id="720p" value="720p"
-            [(ngModel)]="videoSettings.quality">
-          <label class="form-check-label" for="720p">
+          <label class="settings-option">
+            <input type="radio" name="quality" value="720p" [(ngModel)]="videoSettings.quality">
             720p
           </label>
-        </div>
-        <div class="form-check m-2">
-          <input class="form-check-input" type="radio" name="quality" id="480p" value="480p"
-            [(ngModel)]="videoSettings.quality">
-          <label class="form-check-label" for="480p">
+          <label class="settings-option">
+            <input type="radio" name="quality" value="480p" [(ngModel)]="videoSettings.quality">
             480p
           </label>
         </div>
-        <button class="btn btn-dark mt-2" (click)='onGenerate()'>Generate</button>
       </div>
+<!-- Кнопка для генерації відео -->
+<button class="settings-button generate-button" (click)="onGenerate()">Generate Video</button>
     </div>
   </div>
 </div>
