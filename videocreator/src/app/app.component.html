@@ -43,12 +43,12 @@
 
       <!-- Right elements -->
       <div class="d-flex align-items-center">
-        @if (currentUser) {
+        @if (loggedUserData.id == undefined) {
         <button class="btn btn-outline-light" (click)="openRegisterModel()">Register</button>
         <button class="btn btn-outline-light mx-2" (click)="openLoginModel()">Login</button>
         }@else {
         <button class="btn btn-outline-light" [routerLink]="['/my-videos']">
-          <i class="fa-solid fa-user-tie p-2"></i>{{masterService.currentUser()?.username}}
+          <i class="fa-solid fa-user-tie p-2"></i>{{loggedUserData.name}}
         </button>
         <button class="btn btn-danger mx-2" (click)="logOut()">LogOut</button>
         }
@@ -67,14 +67,20 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-12">
+              <label>Email</label>
+              <input type="text" [(ngModel)]="registerObj.email" class="form-control">
+              </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
               <label>Name</label>
-              <input type="text" [(ngModel)]="registerObj.username" class="form-control">
+              <input type="text" [(ngModel)]="registerObj.name" class="form-control">
             </div>
           </div>
           <div class="row">
             <div class="col-12">
               <label>Password</label>
-              <input type="text" [(ngModel)]="registerObj.password" class="form-control">
+              <input type="password" [(ngModel)]="registerObj.password" class="form-control">
             </div>
           </div>
         </div>
@@ -97,8 +103,8 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-12">
-              <label>Username</label>
-              <input type="text" [(ngModel)]="loginObj.username" class="form-control">
+              <label>Email</label>
+              <input type="text" [(ngModel)]="loginObj.email" class="form-control">
             </div>
           </div>
           <div class="row">
