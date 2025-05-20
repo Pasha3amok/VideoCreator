@@ -1,0 +1,36 @@
+body {
+  background-color: #1e1e1e;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.navbar {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.app-content {
+  padding: 20px;
+}
+
+.modal-content {
+  background-color: #2c2c2c;
+  color: #fff;
+  border-radius: 10px;
+}
+
+.modal-header {
+  border-bottom: 1px solid #444;
+}
+
+.modal-footer {
+  border-top: 1px solid #444;
+}
+
+.btn-close {
+  filter: invert(1);
+}

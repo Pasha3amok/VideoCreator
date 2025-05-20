@@ -12,6 +12,8 @@ import {
   VideosModel,
   VideoStatusModel,
 } from '../model/Interfaces';
+import { FormGroupDef } from '../utils/form-group-def';
+import { AbstractControl } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +26,7 @@ export class MasterService {
   constructor() {}
 
   generateVideo(
-    paramsOfVideo: GenerateVideoModel,
+    paramsOfVideo: any,
     authorId: number
   ): Observable<APIResponseModel> {
     const url = `${this.apiUrl}generate_video/${authorId}`;

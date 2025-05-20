@@ -1,21 +1,30 @@
-<div class="container">
-  <div class="main-video">
-    <div class="video">
-      <video [src]="selectedVideo?.src" controls muted></video>
+<div class="dashboard-container">
+  <nav class="dashboard-navbar">
+    <div class="navbar-left">
     </div>
-  </div>
-  <div class="video-list">
+    <div class="navbar-center">
+      <span class="navbar-title">My Videos</span>
+    </div>
+    <div class="navbar-right">
+    </div>
+  </nav>
 
-    @for (item of videos; track $index) {
-    @if (item.src) {
-    <div class="vid" (click)="selectVideo(item, $index)" [class.active]="$index === activeIndex"><video [src]="item.src"
-        muted></video>
-      <button class="btn btn-danger p-2" (click)="deleteVideoByAuthor($index)"><i
-          class="fa-solid fa-trash"></i></button>
-    </div>
-    } @else {
-    <div>Video is in process...</div>
-    }
-    }
+  <div class="dashboard-content">
+    <div class="main-video">
+      <div class="video">
+        <video [src]="selectedVideo?.src" controls muted class="video-element"></video>
+        </div>
+        </div>
+        <div class="video-list">
+      <div *ngFor="let item of videos(); let i = index" class="vid" (click)="selectVideo(item, i)"
+        [class.active]="i === activeIndex">
+        <video [src]="item.src" muted></video>
+        <div class="video-actions">
+          <button class="btn btn-danger" (click)="deleteVideoByAuthor(i)">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      </div>
+      </div>
   </div>
-</div>
+  </div>

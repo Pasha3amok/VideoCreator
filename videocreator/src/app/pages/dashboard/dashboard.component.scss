@@ -1,3 +1,4 @@
+
 .dashboard-container {
   display: flex;
   flex-direction: column;
@@ -62,8 +63,6 @@
   background-color: #000;
 
   .video-element {
-    max-width: 90%;
-    max-height: 90%;
     border-radius: 10px;
   }
 }
@@ -132,8 +131,9 @@
     text-align: center;
   }
 
-  .generate-button {
-    background-color: #28a745;
-  }
 }
+button {
+  width: 100%;
+}
+
 

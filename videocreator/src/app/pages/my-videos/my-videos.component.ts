@@ -5,6 +5,7 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectionStrategy,
+  signal,
 } from '@angular/core';
 import { MasterService } from '../../service/master.service';
 import {
@@ -14,11 +15,13 @@ import {
 } from '../../model/Interfaces';
 import { forkJoin, interval, map, Subscription, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-my-videos',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, FormsModule],
   templateUrl: './my-videos.component.html',
   styleUrl: './my-videos.component.scss',
   changeDetection: ChangeDetectionStrategy.Default,
@@ -29,7 +32,7 @@ export class MyVideosComponent implements OnInit, OnDestroy {
   videoObj: VideosModel[] = [];
   incompleteVideos: VideosModel[] = [];
   user: User = new User();
-  videos = [{ src: '' }];
+  videos = signal<any>([{ src: '' }]);
   videoId!: String;
   loggedUserData: User = new User();
 
@@ -57,9 +60,11 @@ export class MyVideosComponent implements OnInit, OnDestroy {
       .getVideosByAuthor(authorId)
       .subscribe((res: VideosModel[]) => {
         this.videoObj = res;
-        this.videos = this.videoObj.map((item) => ({
-          src: `${this.masterService.apiUrl}video_file/${item.id}`,
-        }));
+        this.videos.set(
+          this.videoObj.map((item) => ({
+            src: `${this.masterService.apiUrl}video_file/${item.id}`,
+          }))
+        );
       });
   }
   getUserId(): number {
@@ -108,7 +113,7 @@ export class MyVideosComponent implements OnInit, OnDestroy {
 
             if (videoObjIndex !== -1) {
               this.videoObj[videoObjIndex] = { ...video, status: 'completed' };
-              this.videos[videoObjIndex] = {
+              this.videos()[videoObjIndex] = {
                 src: `${this.masterService.apiUrl}video_file/${video.id}`,
               };
             }

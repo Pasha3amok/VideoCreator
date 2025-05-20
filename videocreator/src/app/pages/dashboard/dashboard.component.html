@@ -1,78 +1,92 @@
-<div class="dashboard-container">
-
-  <!-- Основний контент -->
-  <div class="dashboard-content">
-    <!-- Ліва частина: Відео -->
-    <div class="video-preview">
-      <video [src]="videoUrl()" controls muted class="video-element"></video>
+<div class="container-fluid dashboard-container justify-content-center">
+  <div class="dashboard-navbar mb-4">
+    <div class="navbar-left">
     </div>
-<!-- Права частина: Налаштування -->
+    <div class="navbar-center">
+      <span class="navbar-title">Home</span>
+    </div>
+    <div class="navbar-right">
+    </div>
+  </div>
+  <div class="dashboard-content">
+    <div class="video-preview">
+      <video [src]="videoUrl()" controls muted class="video-element" #videoElem [ngStyle]="currentVideoStyles"></video>
+    </div>
+<form [formGroup]="videoSettings">
 <div class="settings-panel">
   <div class="settings-header">
     <h5 class="settings-title">Generate Your Video</h5>
   </div>
-<!-- Поле для тексту -->
 <div class="settings-group">
-  <textarea class="settings-textarea" [(ngModel)]="videoSettings.text" placeholder="Type prompt or script"></textarea>
+  <textarea class="settings-textarea" [formControl]="videoSettings.controls.text"
+    placeholder="Type prompt or script"></textarea>
 </div>
 
-<!-- Кнопка для генерації тексту -->
 <button class="settings-button" (click)="onGenerateText()">Generate Prompt</button>
 
-<!-- Вибір мови -->
 <div class="settings-group">
   <label for="languageSelect" class="settings-label">Choose Language</label>
-  <select id="languageSelect" [(ngModel)]="videoSettings.language" class="settings-select">
+  <select id="languageSelect" [formControl]="videoSettings.controls.language" class="settings-select">
     <option disabled selected>Choose the language</option>
     <option *ngFor="let item of (settingsData$ | async)?.language" [value]="item">{{ item }}</option>
         </select>
       </div>
 
-      <!-- Вибір голосу -->
       <div class="settings-group">
         <label for="speakerSelect" class="settings-label">Choose Voice</label>
-        <select id="speakerSelect" [(ngModel)]="videoSettings.speaker" class="settings-select">
+        <select id="speakerSelect" [formControl]="videoSettings.controls.speaker" class="settings-select">
           <option disabled selected>Choose the voice</option>
           <option *ngFor="let item of (settingsData$ | async)?.speaker" [value]="item">
             {{ item.split('/').pop()?.split('.')?.slice(-5, -1) }}
           </option>
         </select>
       </div>
-      
-      <!-- Вибір орієнтації -->
       <div class="settings-group">
-        <label class="settings-label">Choose Orientation</label>
-        <div class="settings-options">
-          <label class="settings-option">
-            <input type="radio" name="orientation" value="portrait" [(ngModel)]="videoSettings.orientation" checked>
-            <i class="fa-solid fa-mobile-screen-button"></i> <!-- Іконка для Portrait -->
+        <label for="speakerSelect" class="settings-label">Choose subtitle size</label>
+        <select id="speakerSelect" [formControl]="videoSettings.controls.subtitles_model_size" class="settings-select">
+          <option disabled selected>Choose subtitle size</option>
+          <option *ngFor="let item of (settingsData$ | async)?.subtitles_model_size" [value]="item">
+            {{ item }}
+          </option>
+        </select>
+      </div>
+
+      <div class="settings-group">
+        <label for="form-check m-2">Choose orientation</label>
+        <div class="form-check m-2">
+          <input class="form-check-input" type="radio" name="orientation" id="portrait" value="portrait"
+            [formControl]="videoSettings.controls.orientation" (click)="this.toggleOrientationPort()">
+          <label class="form-check-label" for="portrait">
+            <i class="fa-solid fa-xl fa-mobile-screen-button"></i>
           </label>
-          <label class="settings-option">
-            <input type="radio" name="orientation" value="landscape" [(ngModel)]="videoSettings.orientation">
-            <i class="fa-solid fa-desktop"></i> <!-- Іконка для Landscape -->
+        </div>
+        <div class="form-check m-2">
+          <input class="form-check-input" type="radio" name="orientation" id="landscape" value="landscape"
+            [formControl]="videoSettings.controls.orientation" (click)="this.toggleOrientationLand()">
+          <label class="form-check-label" for="landscape">
+            <i class="fa-solid fa-xl fa-desktop"></i>
           </label>
         </div>
       </div>
-<!-- Вибір якості -->
 <div class="settings-group">
   <label class="settings-label">Choose Quality</label>
   <div class="settings-options">
     <label class="settings-option">
-      <input type="radio" name="quality" value="1080p" [(ngModel)]="videoSettings.quality" checked>
+      <input type="radio" name="quality" value="1080p" [formControl]="videoSettings.controls.quality" checked>
             1080p
           </label>
           <label class="settings-option">
-            <input type="radio" name="quality" value="720p" [(ngModel)]="videoSettings.quality">
+            <input type="radio" name="quality" value="720p" [formControl]="videoSettings.controls.quality">
             720p
           </label>
           <label class="settings-option">
-            <input type="radio" name="quality" value="480p" [(ngModel)]="videoSettings.quality">
+            <input type="radio" name="quality" value="480p" [formControl]="videoSettings.controls.quality">
             480p
           </label>
         </div>
       </div>
-<!-- Кнопка для генерації відео -->
-<button class="settings-button generate-button" (click)="onGenerate()">Generate Video</button>
-    </div>
-  </div>
+      </div>
+<button class="btn btn-success btn-lg" (click)="onGenerate()">Generate Video</button>
+</form>
+</div>
 </div>

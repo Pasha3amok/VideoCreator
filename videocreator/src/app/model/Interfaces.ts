@@ -42,28 +42,21 @@ export interface VideoInfoModel {
   details: {};
 }
 
-export class GenerateVideoModel {
-  text: WritableSignal<string>;
+export interface GenerateVideoModel {
+  text: string;
   language: string;
   speaker: string;
   quality: string;
   orientation: string;
   volume: number;
-
-  constructor() {
-    this.text = signal<string>('');
-    this.language = '';
-    this.speaker = '';
-    this.quality = '';
-    this.orientation = '';
-    this.volume = 0.1;
-  }
+  subtitles_model_size: string;
 }
 
 export interface Settings {
   language: string[];
   speaker: string[];
   volume: number[];
+  subtitles_model_size: string[];
 }
 
 export interface VideosModel {

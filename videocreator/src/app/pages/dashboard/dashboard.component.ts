@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import {
   APIResponseModel,
   GenerateVideoModel,
@@ -14,6 +14,8 @@ import {
   OnInit,
   signal,
   ChangeDetectionStrategy,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import {
   interval,
@@ -23,13 +25,14 @@ import {
   switchMap,
   takeWhile,
 } from 'rxjs';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SettingsForm } from '../../form/settings-form/settings-form.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.Default,
@@ -37,12 +40,14 @@ import { Router } from '@angular/router';
 export class DashboardComponent implements OnInit {
   masterService = inject(MasterService);
   router = inject(Router);
-  videoSettings: GenerateVideoModel = new GenerateVideoModel();
+  videoSettings: SettingsForm = new SettingsForm();
   settingsData$: Observable<Settings> = new Observable<Settings>();
   subscriptionList: Subscription[] = [];
   loggedUserData: User | null = null;
-  videoId: string = '';
+  videoId = signal<string>('');
   videoUrl = signal<string>('');
+
+  @ViewChild('videoElem') videoElem: ElementRef | undefined;
 
   ngOnInit(): void {
     const isUser = localStorage.getItem('User');
@@ -63,10 +68,10 @@ export class DashboardComponent implements OnInit {
 
     this.subscriptionList.push(
       this.masterService
-        .generateVideo(this.videoSettings, currentUserId)
+        .generateVideo(this.videoSettings.value, currentUserId)
         .subscribe((res: APIResponseModel) => {
           if (res.status === 'accepted') {
-            this.videoId = res.name;
+            this.videoId.set(res.name);
             this.pollStatus();
             alert(res.message);
           } else {
@@ -77,19 +82,22 @@ export class DashboardComponent implements OnInit {
   }
 
   onGenerateText() {
-    var language = this.videoSettings.text();
-    if (language == 'uk') {
-      language = 'ua';
+    var language = this.videoSettings.controls.language;
+    if (language.value == 'uk') {
+      language.setValue('ua');
     }
-    if (language == '') {
+    if (!language) {
       alert('Вкажіть мову в налаштуваннях');
       return;
     }
     this.subscriptionList.push(
       this.masterService
-        .getText(this.videoSettings.text()!, this.videoSettings.language)
+        .getText(
+          this.videoSettings.controls.text.value!,
+          this.videoSettings.controls.language.value!
+        )
         .subscribe((res: string) => {
-          this.videoSettings.text.set(res);
+          this.videoSettings.controls.text.setValue(res);
         })
     );
   }
@@ -97,18 +105,47 @@ export class DashboardComponent implements OnInit {
   pollStatus(): void {
     interval(2000)
       .pipe(
-        switchMap(() => this.masterService.getVideoStatus(this.videoId!)),
+        switchMap(() => this.masterService.getVideoStatus(this.videoId()!)),
         takeWhile((res: APIResponseModel) => res.status !== 'completed', true)
       )
       .subscribe((res: APIResponseModel) => {
         if (res.status === 'completed') {
           this.videoUrl.set(
-            `${this.masterService.apiUrl}video_file/${this.videoId}`
+            `${this.masterService.apiUrl}video_file/${this.videoId()}`
           );
         } else {
           return;
         }
       });
+  }
+  public get currentVideoStyles(): { [key: string]: string } {
+    const orientation = this.videoSettings.controls.orientation.value;
+
+    if (orientation === 'landscape') {
+      return {
+        width: '70%',
+        height: '70%',
+      };
+    } else if (orientation === 'portrait') {
+      return {
+        width: '25%',
+        height: '70%',
+      };
+    } else {
+
+      return {
+        width: 'auto',
+        height: 'auto',
+      };
+    }
+  }
+
+  toggleOrientationLand() {
+    this.videoSettings.controls.orientation.setValue('landscape');
+  }
+
+  toggleOrientationPort() {
+    this.videoSettings.controls.orientation.setValue('portrait');
   }
 
   ngOnDestroy(): void {
